@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mplcursors
 import pandas as pd
-from support_code.csv_reader import csv_reader, dat_reader
+from support_code.reader import csv_reader, dat_reader
 from helper_test2 import helper_test_function2
 
 
@@ -37,12 +37,20 @@ def handler(directory, info_filename, date, index, samples):
     
 
 
-##testing area
-directory = "/home/octonator/Desktop/Augustus_Electrode/LED_Sensing/data/20260921/"
-info_filename = "RPI_Camera_File_Tracker_20260921.csv"
-date = "20260921"
-samples = 200
-N_measurements = 17
+### Input file information here
+
+##Example
+# directory = "/home/octonator/Desktop/Augustus_Electrode/LED_Sensing/data/20260921/"
+# info_filename = "RPI_Camera_File_Tracker_20260921.csv"
+# date = "20260921"
+# samples = 200
+# N_measurements = 17
+
+directory = "/home/octonator/Desktop/Augustus_Electrode/LED_Sensing/data/20261030/"
+info_filename = "RPI_Camera_File_Tracker_20261030.csv"
+date = "20261030"
+samples = 100
+N_measurements = 184
 
 ### Making lists of data arrays
 intensity_avg_array = np.zeros(N_measurements) 
@@ -63,33 +71,53 @@ for i in range(N_measurements):
     std_array[i] = handler_returns[4]
 
 print(f"Intensity Average: {intensity_avg_array}")
-### Plotting intensity vs time for multiple measurements
-fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(10,10), layout="constrained")
 
-for i in range(N_measurements):
+###Log of array
 
-    ax1.plot(Ts[i][0:samples], Is[i][0:samples], linestyle='none', marker='.', markersize=1, label=f"Vp = {Vp_array[i]}")
-    ax1.tick_params(axis='both', labelsize=14)
-    ax1.legend(bbox_to_anchor=(-0.1,0.5), loc="center right")
-
-ax1.set_xlabel("Seconds")
-ax1.set_ylabel("Intensity")
+logr = np.log(intensity_avg_array)
 
 ### Plotting averaged intensity 
+fig, ax = plt.subplots(figsize=(10,10))
+# lines = ax.plot(Vp_array, logr, linestyle='none', marker='.', markersize=10)
+lines2 = ax.plot(Vp_array, intensity_avg_array, linestyle='none', marker='.', markersize=10)
+ax.set_title("Average Intensity, R = 139.7, 140 kHz", fontsize=20)
+ax.tick_params(axis='both', labelsize=14)
+ax.set_xlabel("Drive Voltage, Vp", fontsize=15)
+ax.set_ylabel("Average Intensity", fontsize=15)
 
-ax2.plot(Vp_array, intensity_avg_array, linestyle='none', marker='.', markersize=10)
-ax2.set_title("Average Intensity, R = 139.7, 140 kHz")
-ax2.tick_params(axis='both', labelsize=14)
-ax2.set_xlabel("Vp", fontsize=10)
-ax2.set_ylabel("Average Intensity", fontsize=10)
-
-### Plotting standard deviation
-ax3.plot(Vp_array, std_array, linestyle='none', marker='.', markersize=10)
-ax3.tick_params(axis='both', labelsize=14)
-ax3.set_xlabel("Vp")
-ax3.set_ylabel("Standard Deviation")
-
-
+mplcursors.cursor(lines2)
 
 plt.show()
+
+
+# ###Setting up subplots
+# fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(10,10), layout="constrained")
+
+
+# ## Plotting intensity vs time for multiple measurements
+# for i in range(N_measurements):
+
+#     ax1.plot(Ts[i][0:samples], Is[i][0:samples], linestyle='none', marker='.', markersize=1, label=f"Vp = {Vp_array[i]}")
+#     ax1.tick_params(axis='both', labelsize=14)
+#     ax1.legend(bbox_to_anchor=(-0.1,0.5), loc="center right")
+
+# ax1.set_xlabel("Seconds")
+# ax1.set_ylabel("Intensity")
+
+# ### Plotting averaged intensity 
+
+# ax2.plot(Vp_array, intensity_avg_array, linestyle='none', marker='.', markersize=10)
+# ax2.set_title("Average Intensity, R = 139.7, 140 kHz")
+# ax2.tick_params(axis='both', labelsize=14)
+# ax2.set_xlabel("Vp", fontsize=10)
+# ax2.set_ylabel("Average Intensity", fontsize=10)
+
+# ## Plotting standard deviation
+# ax3.plot(Vp_array, std_array, linestyle='none', marker='.', markersize=10)
+# ax3.tick_params(axis='both', labelsize=14)
+# ax3.set_xlabel("Vp")
+# ax3.set_ylabel("Standard Deviation")
+
+
+# plt.show()
 
